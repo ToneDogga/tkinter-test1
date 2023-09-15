@@ -8,11 +8,7 @@
 #ttk.Label(frm, text="Hello World!").grid(column=0, row=0)
 #ttk.Button(frm, text="Quit", command=root.destroy).grid(column=1, row=0)
 #root.mainloop()
-import tkinter as tk
-import subprocess
 
-import tkinter as tk
-import subprocess
 
 
 import tkinter as tk
@@ -58,7 +54,7 @@ class CppCompilerApp:
         optimization = self.optimization_var.get()
 
         # Create a temporary file to store assembly output
-        with tempfile.NamedTemporaryFile(mode="w", delete=False) as asm_file:
+        with tempfile.NamedTemporaryFile(mode="w", delete=False, text=True) as asm_file:
             try:
                 cmd = [compiler, "-S", "temp.cpp", "-o", "temp", optimization]
                 subprocess.run(cmd, stdout=asm_file, stderr=subprocess.STDOUT, text=True, check=True)
@@ -78,3 +74,4 @@ if __name__ == "__main__":
     root = tk.Tk()
     app = CppCompilerApp(root)
     root.mainloop()
+
