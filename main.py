@@ -52,21 +52,21 @@ class CppCompilerApp:
         compiler = self.compiler_var.get()
         optimization = self.optimization_var.get()
 
-        try:
-            cmd = [compiler, "-S", "temp.cpp", "-o", "/dev/stdout", optimization]
-            assembly_code = subprocess.check_output(cmd, stderr=subprocess.STDOUT, text=True)
-        except subprocess.CalledProcessError as e:
-            assembly_code = e.output
+        # Execute the compilation and assembly command using the shell
+        cmd = f"{compiler} -S temp.cpp -o temp {optimization} 2>&1"
+        result = subprocess.getoutput(cmd)
 
         # Display the assembly code
         self.output_text.config(state=tk.NORMAL)
         self.output_text.delete("1.0", tk.END)
-        self.output_text.insert(tk.END, assembly_code)
+        self.output_text.insert(tk.END, result)
         self.output_text.config(state=tk.DISABLED)
 
 if __name__ == "__main__":
     root = tk.Tk()
     app = CppCompilerApp(root)
     root.mainloop()
+
+
 
 
