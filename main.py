@@ -53,17 +53,15 @@ class CppCompilerApp:
         compiler = self.compiler_var.get()
         optimization = self.optimization_var.get()
 
-        # Create a temporary file to store assembly output
-        with tempfile.NamedTemporaryFile(mode="w", delete=False, text=True) as asm_file:
+        # Create a temporary file to capture stderr
+        with tempfile.TemporaryFile() as stderr_file:
             try:
                 cmd = [compiler, "-S", "temp.cpp", "-o", "temp", optimization]
-                subprocess.run(cmd, stdout=asm_file, stderr=subprocess.STDOUT, text=True, check=True)
+                subprocess.run(cmd, stderr=stderr_file, text=True, check=True)
+                stderr_file.seek(0)
+                assembly_code = stderr_file.read()
             except subprocess.CalledProcessError as e:
-                asm_file.write(e.output)
-
-        # Read and display the content of the assembly file
-        with open(asm_file.name, "r") as asm_file:
-            assembly_code = asm_file.read()
+                assembly_code = e.output
 
         self.output_text.config(state=tk.NORMAL)
         self.output_text.delete("1.0", tk.END)
