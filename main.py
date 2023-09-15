@@ -10,7 +10,6 @@
 #root.mainloop()
 
 
-
 import tkinter as tk
 import subprocess
 import tempfile
