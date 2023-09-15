@@ -14,6 +14,11 @@ import subprocess
 import tkinter as tk
 import subprocess
 
+
+import tkinter as tk
+import subprocess
+import tempfile
+
 class CppCompilerApp:
     def __init__(self, root):
         self.root = root
@@ -52,12 +57,17 @@ class CppCompilerApp:
         compiler = self.compiler_var.get()
         optimization = self.optimization_var.get()
 
-        try:
-            cmd = [compiler, "-S", "temp.cpp", "-o", "temp", optimization]
-            result = subprocess.check_output(cmd, stderr=subprocess.STDOUT, universal_newlines=True)
-            assembly_code = result
-        except subprocess.CalledProcessError as e:
-            assembly_code = e.output
+        # Create a temporary file to store assembly output
+        with tempfile.NamedTemporaryFile(mode="w", delete=False) as asm_file:
+            try:
+                cmd = [compiler, "-S", "temp.cpp", "-o", "temp", optimization]
+                subprocess.run(cmd, stdout=asm_file, stderr=subprocess.STDOUT, text=True, check=True)
+            except subprocess.CalledProcessError as e:
+                asm_file.write(e.output)
+
+        # Read and display the content of the assembly file
+        with open(asm_file.name, "r") as asm_file:
+            assembly_code = asm_file.read()
 
         self.output_text.config(state=tk.NORMAL)
         self.output_text.delete("1.0", tk.END)
