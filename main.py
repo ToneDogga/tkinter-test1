@@ -11,8 +11,6 @@
 import tkinter as tk
 import subprocess
 
-
-
 import tkinter as tk
 import subprocess
 
@@ -54,17 +52,16 @@ class CppCompilerApp:
         compiler = self.compiler_var.get()
         optimization = self.optimization_var.get()
 
-        # Add -S flag to generate assembly code
         try:
-            cmd = [compiler, "temp.cpp", "-o", "temp", optimization, "-S"]
-            result = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-            output = result.decode("utf-8")
+            cmd = [compiler, "-S", "temp.cpp", "-o", "temp", optimization]
+            result = subprocess.check_output(cmd, stderr=subprocess.STDOUT, universal_newlines=True)
+            assembly_code = result
         except subprocess.CalledProcessError as e:
-            output = e.output.decode("utf-8")
+            assembly_code = e.output
 
         self.output_text.config(state=tk.NORMAL)
         self.output_text.delete("1.0", tk.END)
-        self.output_text.insert(tk.END, output)
+        self.output_text.insert(tk.END, assembly_code)
         self.output_text.config(state=tk.DISABLED)
 
 if __name__ == "__main__":
