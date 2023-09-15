@@ -10,7 +10,6 @@
 #root.mainloop()
 
 
-
 import tkinter as tk
 import subprocess
 import tempfile
@@ -22,7 +21,7 @@ class CppCompilerApp:
 
         self.text_input = tk.Text(root, height=10, width=40)
         self.text_input.pack()
-        self.text_input.bind("<KeyRelease>", self.compile_cpp)
+        self.text_input.bind("<KeyRelease-1>", self.compile_cpp)
 
         self.output_text = tk.Text(root, height=10, width=40, state=tk.DISABLED)
         self.output_text.pack()
@@ -72,4 +71,5 @@ if __name__ == "__main__":
     root = tk.Tk()
     app = CppCompilerApp(root)
     root.mainloop()
+
 
