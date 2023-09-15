@@ -53,8 +53,9 @@ class CppCompilerApp:
         compiler = self.compiler_var.get()
         optimization = self.optimization_var.get()
 
+        # Add -S flag to generate assembly code
         try:
-            cmd = [compiler, "temp.cpp", "-o", "temp", optimization]
+            cmd = [compiler, "temp.cpp", "-o", "temp", optimization, "-S"]
             result = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
             output = result.decode("utf-8")
         except subprocess.CalledProcessError as e:
