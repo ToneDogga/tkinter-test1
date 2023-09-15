@@ -44,7 +44,7 @@ class CppCompilerApp:
         )
         self.optimization_option.pack()
 
-    def compile_cpp(self, event=None):
+    def compile_cpp(self, event):
         code = self.text_input.get("1.0", tk.END)
         with open("temp.cpp", "w") as f:
             f.write(code)
@@ -71,4 +71,5 @@ if __name__ == "__main__":
     root = tk.Tk()
     app = CppCompilerApp(root)
     root.mainloop()
+
 
