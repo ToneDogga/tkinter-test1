@@ -11,10 +11,21 @@
 import tkinter as tk
 import subprocess
 
+
+import tkinter as tk
+import subprocess
+
 class CppCompilerApp:
     def __init__(self, root):
         self.root = root
         self.root.title("C++ Compiler")
+
+        self.text_input = tk.Text(root, height=10, width=40)
+        self.text_input.pack()
+        self.text_input.bind("<KeyRelease>", self.compile_cpp)
+
+        self.output_text = tk.Text(root, height=10, width=40, state=tk.DISABLED)
+        self.output_text.pack()
 
         self.compiler_label = tk.Label(root, text="Select Compiler:")
         self.compiler_label.pack()
@@ -33,13 +44,6 @@ class CppCompilerApp:
             root, self.optimization_var, "-O0", "-O1", "-O2", "-O3"
         )
         self.optimization_option.pack()
-
-        self.text_input = tk.Text(root, height=10, width=40)
-        self.text_input.pack()
-        self.text_input.bind("<KeyRelease>", self.compile_cpp)
-
-        self.output_text = tk.Text(root, height=10, width=40, state=tk.DISABLED)
-        self.output_text.pack()
 
     def compile_cpp(self, event=None):
         code = self.text_input.get("1.0", tk.END)
@@ -65,4 +69,3 @@ if __name__ == "__main__":
     root = tk.Tk()
     app = CppCompilerApp(root)
     root.mainloop()
-
