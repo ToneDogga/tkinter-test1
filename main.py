@@ -80,7 +80,7 @@ class CppAssemblyGUI(tk.Tk):
             with open("temp_cpp_code.cpp","w") as f:
                 f.write(cpp_code)
 
-            assembly_output=check_output([compiler,"-S", "-o-", f.name, f"-{optimization_level}"])
+            assembly_output=check_output([compiler,"-S", "-o-", f.name, f"-{optimization_level}","-masm=intel"])
 
             self.output_text.config(state=tk.NORMAL)
             self.output_text.delete("1.0",tk.END)
