@@ -23,39 +23,78 @@ class CppAssemblyGUI(tk.Tk):
 
         self.init_ui()
 
-    def unit_ui(self):
-        input_frame = ttk.frame(self)
+    def init_ui(self):
+        input_frame = ttk.Frame(self)
         input_frame.pack(fill=tk.BOTH, expand=True)
 
-        input_label=ttk.label(input_frame, text="C++ Program:")
+        input_label=ttk.Label(input_frame, text="C++ Program:")
         input_label.pack(anchor=tk.W)
 
+        self.input_text = tk.Text(input_frame, wrap=tk.NONE)
+        self.input_text.pack(fill=tk.BOTH, expand=True)
 
-        self.text_input = tk.Text(self.root, height=10, width=40)
-        self.text_input.pack()
-        self.text_input.bind("<KeyRelease>", self.compile_cpp)
+        output_frame=ttk.Frame(self)
+        output_frame.pack(fill=tk.BOTH, expand=True)
 
-        self.output_text = tk.Text(self.root, height=10, width=40, state=tk.DISABLED)
-        self.output_text.pack()
+        output_label=ttk.Label(output_frame, text="Assembly output")
+        output_label.pack(anchor=tk.W)
 
-    def compile_cpp(self, event=None):
-        code = self.text_input.get("1.0", tk.END)
-        with open("temp.cpp", "w") as f:
-            f.write(code)
+        self.output_text=tk.Text(output_frame, wrap=tk.NONE, state=tk.DISABLED)
+        self.output_text.pack(fill=tk.BOTH, expand=True)
 
+        config_frame=ttk.Frame(self)
+        config_frame.pack(side=tk.BOTTOM, fill=tk.X)
+
+        self.compiler_var=tk.StringVar()
+        self.compiler_var.set("g++")
+
+        compiler_label=ttk.Label(config_frame,text="Compiler")
+        compiler_label.pack(side=tk.LEFT,padx=(0,5))
+        complier_dropdown=ttk.OptionMenu(config_frame, self.compiler_var,"g++",)
+        complier_dropdown.pack(side=tk.LEFT)
+
+        self.optimization_var=tk.StringVar()
+        self.optimization_var.set("O1")
+
+        optimization_label=ttk.Label(config_frame, text="Optimization:")
+        optimization_label.pack(side=tk.LEFT, padx=(10,5))
+        optimization_dropdown=ttk.OptionMenu(config_frame, self.optimization_var,)
+        optimization_dropdown.pack(side=tk.LEFT)
+
+        self.input_text.bind("<KeyRelease>",self.update_assembly)
+
+
+    def on_compiler_change(self,_):
+        self.update_assembly()
+
+    def on_optimization_change(self,_):
+        self.update_assembly()
+
+    def update_assembly(self,_):
         try:
-            result = subprocess.check_output(["g++", "temp.cpp", "-o", "temp"])
-            output = result.decode("utf-8")
-        except subprocess.CalledProcessError as e:
-            output = e.output.decode("utf-8")
+            cpp_code=self.input_text.get(1.0,tk.END)
+            compiler=self.compiler_var.get()
+            optimization_level=self.optimization_var.get()
 
-        self.output_text.config(state=tk.NORMAL)
-        self.output_text.delete("1.0", tk.END)
-        self.output_text.insert(tk.END, output)
-        self.output_text.config(state=tk.DISABLED)
+            with open("temp_cpp_code.cpp","w") as f:
+                f.write(cpp_code)
+
+            assembly_output=check_output([compiler,"-S", "-o-", f.name, f"-{optimization_level}"])
+
+            self.output_text.config(state=tk.NORMAL)
+            self.output_text.delete("1.0",tk.END)
+            self.output_text.insert(tk.END,assembly_output)
+            self.output_text.config(state=tk.DISABLED)
+
+
+        except CalledProcessError as e:
+            self.output_text.config(state=tk.NORMAL)
+            self.output_text.delete("1.0",tk.END)
+            self.output_text.insert(tk.END,f"Error: {e}")
+            self.output_text.config(state=tk.DISABLED)
+
 
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    app = CppCompilerApp(root)
-    root.mainloop()
+    app = CppAssemblyGUI()
+    app.mainloop()
