@@ -11,14 +11,25 @@
 
 
 import tkinter as tk
+from tkinter import ttk
+from subprocess import check_output, CalledProcessError
 
-import subprocess
 
+class CppAssemblyGUI(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("C++ to assembly Compiler")
+        self.geometry("800x600")
 
-class CppCompilerApp:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("C++ Compiler")
+        self.init_ui()
+
+    def unit_ui(self):
+        input_frame = ttk.frame(self)
+        input_frame.pack(fill=tk.BOTH, expand=True)
+
+        input_label=ttk.label(input_frame, text="C++ Program:")
+        input_label.pack(anchor=tk.W)
+
 
         self.text_input = tk.Text(self.root, height=10, width=40)
         self.text_input.pack()
